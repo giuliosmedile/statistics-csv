@@ -1,0 +1,11 @@
+C:\Users\giuli\source\repos\Final CSV\Final CSV\bin\Debug\Final CSV.exe.config
+C:\Users\giuli\source\repos\Final CSV\Final CSV\bin\Debug\Final CSV.exe
+C:\Users\giuli\source\repos\Final CSV\Final CSV\bin\Debug\Final CSV.pdb
+C:\Users\giuli\source\repos\Final CSV\Final CSV\obj\Debug\Final CSV.csprojAssemblyReference.cache
+C:\Users\giuli\source\repos\Final CSV\Final CSV\obj\Debug\Final_CSV.Form1.resources
+C:\Users\giuli\source\repos\Final CSV\Final CSV\obj\Debug\Final_CSV.GraphVisualizer.resources
+C:\Users\giuli\source\repos\Final CSV\Final CSV\obj\Debug\Final_CSV.Properties.Resources.resources
+C:\Users\giuli\source\repos\Final CSV\Final CSV\obj\Debug\Final CSV.csproj.GenerateResource.cache
+C:\Users\giuli\source\repos\Final CSV\Final CSV\obj\Debug\Final CSV.csproj.CoreCompileInputs.cache
+C:\Users\giuli\source\repos\Final CSV\Final CSV\obj\Debug\Final CSV.exe
+C:\Users\giuli\source\repos\Final CSV\Final CSV\obj\Debug\Final CSV.pdb
