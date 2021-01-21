@@ -35,7 +35,7 @@ namespace Final_CSV
         bool draggingStarted;
         bool resizingStared;
 
-        Rectangle scatterPlotViewport = new Rectangle(100, 25, 325, 325);
+        Rectangle scatterPlotViewport = new Rectangle(100, 25, 525, 325);
         Rectangle histogramXViewport;
         Rectangle histogramYViewPort;
         Rectangle contingencyTableViewPort;
@@ -43,6 +43,7 @@ namespace Final_CSV
         Histogram histogramX;
         Histogram histogramY;
         ContingencyTable contingencyTable;
+        LinearRegression lr;
 
 
         private Rectangle viewportAtMouseDown;
@@ -130,14 +131,13 @@ namespace Final_CSV
                 maxXWindow = findMaxValue(xValues);
                 minYWindow = findMinValue(yValues);
                 maxYWindow = findMaxValue(yValues);
-
                 rangeX = maxXWindow - minXWindow;
                 rangeY = maxYWindow - minYWindow;
 
                 histogramX = new Histogram(xValues, 15);
                 histogramY = new Histogram(yValues, 15);
                 contingencyTable = new ContingencyTable(xValues, yValues);
-
+                lr = new LinearRegression(xValues, yValues);
                 this.drawScene();
             } catch (Exception ex)
             {
@@ -158,6 +158,7 @@ namespace Final_CSV
             g.DrawRectangle(Pens.Blue, histogramYViewPort);
             g.DrawRectangle(Pens.Green, contingencyTableViewPort);
 
+            //Scatterplot
             foreach (DataPoint d in dataset)
             {
                 int xDevice = this.xViewport(d.x, scatterPlotViewport, minXWindow, rangeX);
@@ -170,6 +171,7 @@ namespace Final_CSV
                 }
             }
 
+            //Quartiles
             int xMean = this.xViewport(xValues.Average(), scatterPlotViewport, minXWindow, rangeX);
             int yMean = this.yViewport(yValues.Average(), scatterPlotViewport, minYWindow, rangeY);
             List<double> xQuartiles = this.histogramX.quartiles;
@@ -193,6 +195,14 @@ namespace Final_CSV
                 g.DrawLine(Pens.Blue, scatterPlotViewport.X + scatterPlotViewport.Width, yMean, scatterPlotViewport.X, yMean);
             }
 
+            //Linear Regression
+            double minXRegression, maxXRegression = 0;
+            lr.findIntersectionPoints(minYWindow, maxYWindow, out minXRegression, out maxXRegression);
+            double minXRegressionViewport = this.xViewport(minXRegression, scatterPlotViewport, minXWindow, rangeX);
+            double maxXRegressionViewport = this.xViewport(maxXRegression, scatterPlotViewport, minXWindow, rangeX);
+            double minY = this.yViewport(minYWindow, scatterPlotViewport, minYWindow, rangeY);
+            double maxY = this.yViewport(maxYWindow, scatterPlotViewport, minYWindow, rangeY);
+            g.DrawLine(Pens.Green, (float)minXRegressionViewport, (float)minY, (float)maxXRegressionViewport, (float)maxY);
 
             this.pictureBox1.Image = b;
 
