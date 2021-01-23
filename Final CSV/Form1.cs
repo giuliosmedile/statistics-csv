@@ -34,6 +34,7 @@ namespace Final_CSV
         string className = "DataType";
         Dictionary<String, Type> variables;
         string oldVariableName;
+        string selectedFieldSeparator;
         List<object> itemsList;
 
         public Form1()
@@ -46,48 +47,48 @@ namespace Final_CSV
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "CSV File (*.csv)|*.csv";
-                openFileDialog.ShowDialog();
-
-                //Get the path of specified file
-                filePath = openFileDialog.FileName;
-                filePathTextBox.Text = filePath;
-
-                //Try reading the csv file
-                try
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    tfp = new TextFieldParser(filePath);
-                }
-                //If an exception is caught, show an error message
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    string alertMsg;
-                    string alertCaption;
-                    alertCaption = "Impossible to open file";
-                    alertMsg = "It was impossible to open the file \"" + Path.GetFileName(filePath) + "\", please try again.";
-                    MessageBoxButtons buttons = MessageBoxButtons.OK;
-                    DialogResult result = MessageBox.Show(alertMsg, alertCaption, buttons);
-                    if (result == System.Windows.Forms.DialogResult.OK)
+                    //Get the path of specified file
+                    filePath = openFileDialog.FileName;
+                    filePathTextBox.Text = filePath;
+
+                    //Try reading the csv file
+                    try
                     {
-                        // Closes the parent form.
-                        this.Close();
+                        tfp = new TextFieldParser(filePath);
                     }
+                    //If an exception is caught, show an error message
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        string alertMsg;
+                        string alertCaption;
+                        alertCaption = "Impossible to open file";
+                        alertMsg = "It was impossible to open the file \"" + Path.GetFileName(filePath) + "\", please try again.";
+                        MessageBoxButtons buttons = MessageBoxButtons.OK;
+                        DialogResult result = MessageBox.Show(alertMsg, alertCaption, buttons);
+                        if (result == System.Windows.Forms.DialogResult.OK)
+                        {
+                            // Closes the parent form.
+                            this.Close();
+                        }
+                    }
+
+
+                    //once the file is opened, read the first line, so to get the names of the variables
+                    tfp.Delimiters = new string[] { selectedFieldSeparator };
+                    string[] variableNames = tfp.ReadFields();
+                    SuggestVariables(variableNames);
+                    CreateType();
+
+                    //import the csv into the list
+                    ImportToDataPointList();
+
+                    //fill the table
+                    FillTable();
                 }
-
-                //once the file is opened, read the first line, so to get the names of the variables
-                tfp.Delimiters = new string[] { "," };
-                string[] variableNames = tfp.ReadFields();
-                SuggestVariables(variableNames);
-                CreateType();
-
-                //add the temporary class name to the text field
-                //classNameTextBox.Text = className;
-
-                //import the csv into the list
-                ImportToDataPointList();
-
-                //fill the table
-                FillTable();
+                
             }
         }
 
@@ -98,6 +99,7 @@ namespace Final_CSV
             string type;
 
             //check if i'm either clicking the name or the type
+            //this isn't the most elegant way, but it sure works wonders...
             try
             {
                 name = e.Node.Text;
@@ -120,14 +122,13 @@ namespace Final_CSV
         }
         private void exportCSVButton_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
-            saveFileDialog1.RestoreDirectory = true;
-            //saveFileDialog1.FileName = classNameTextBox.Text;
+            SaveFileDialog fd = new SaveFileDialog();
+            fd.Filter = "CSV files (*.csv)|*.csv";
+            fd.RestoreDirectory = true;
 
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            if (fd.ShowDialog() == DialogResult.OK)
             {
-                var sw = new StreamWriter(saveFileDialog1.FileName);
+                var sw = new StreamWriter(fd.FileName);
 
                 //write the names of the variables as the first row
                 StringBuilder w = new StringBuilder();
@@ -146,6 +147,7 @@ namespace Final_CSV
                     {
                         w.Append(fi.GetValue(o).ToString() + ",");
                     }
+                    //remove the last field separator at the end of the line
                     w.Remove(w.Length - 1, 1);
                     sw.WriteLine(w.ToString());
                 }
@@ -157,7 +159,7 @@ namespace Final_CSV
         {
             if (variableListBox.SelectedItem == null || variables == null)
             {
-                MessageBox.Show("Error. Did you import a CSV file?", "Error");
+                //MessageBox.Show("Error. Did you import a CSV file?", "Error");
             }
             else
             {
@@ -168,7 +170,7 @@ namespace Final_CSV
                     int newVariableType = DataTypesOrder(variableListBox.SelectedItem.ToString());
                     int oldVariableType = DataTypesOrder(variables[oldVariableName].Name);
 
-                    //check if the conversion is allowed (can't convert to a 'higher' type, but can co
+                    //check if the conversion is allowed (can't convert to a 'higher' type, due to conversion errors)
                     if (newVariableType > oldVariableType && newVariableType != 5 && !(newVariableType == 2 && oldVariableType == 1))
                     {
                         string msg = "Impossible to convert from " + variables[oldVariableName].Name + " to " + variableListBox.SelectedItem + ".";
@@ -191,7 +193,6 @@ namespace Final_CSV
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error. Did you import a CSV file?", "Error");
                     Debug.WriteLine(ex.Message);
                 }
             }
@@ -227,10 +228,12 @@ namespace Final_CSV
             // the assembly name plus an extension.
             ModuleBuilder mb = ab.DefineDynamicModule(aName.Name, aName.Name + ".dll");
 
+            //Define a new type, and make all the fields public
             TypeBuilder tb = mb.DefineType(
                 className,
                 TypeAttributes.Public);
 
+            //add each new field, as detected and saved in the variables map
             foreach (KeyValuePair<String, Type> kvp in variables)
             {
                 tb.DefineField(
@@ -252,21 +255,20 @@ namespace Final_CSV
             string[][] sample = new string[sampleSize][];           //matrix of samples
 
             TextFieldParser parser = new TextFieldParser(filePath);
-            parser.Delimiters = new string[] { "," };
+            parser.Delimiters = new string[] { selectedFieldSeparator };
 
-            //skip first line, we don't want that
+            //skip first line, we don't want that as it's most probably the name of the fields
             parser.ReadFields();
 
             for (int i = 0; i < sampleSize || parser.EndOfData; i++)
             {
-
                 sample[i] = parser.ReadFields();
             }
 
             //I don't need the tfp anymore
             parser.Close();
 
-            //transpose the sample matrix
+            //transpose the sample matrix, so we have each entry as a column instead of a row
             string[][] transposedSample = transpose(sample);
 
             for (int i = 0; i < variableNames.Length; i++)
@@ -377,7 +379,7 @@ namespace Final_CSV
 
             //first import the csv into the list of objects
             tfp = new TextFieldParser(filePath);
-            tfp.Delimiters = new string[] { "," };
+            tfp.Delimiters = new string[] { selectedFieldSeparator };
 
             //skip the first row of names in the csv
             tfp.ReadFields();
@@ -391,20 +393,22 @@ namespace Final_CSV
                 object dataPoint = Activator.CreateInstance(dataPointType);
 
                 int i = 0;
+                //for each field in the new type
                 foreach (FieldInfo fi in dataPointType.GetFields())
                 {
                     try
                     {
                         if (!string.IsNullOrWhiteSpace(fields[i]))
                         {
-                            var value = Convert.ChangeType(fields[i], fi.FieldType);
+                            //convert each entry to the correct type. InvariantCulture is needed to accurately convert the decimal separator
+                            var value = Convert.ChangeType(fields[i], fi.FieldType, System.Globalization.CultureInfo.InvariantCulture);
                             fi.SetValue(dataPoint, value);
                         }
 
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Error", "Error");
+                        Debug.WriteLine("Failed while trying to convert " + fields[i] + "in the type " + fi.FieldType);
                     }
                     i++;
                 }
@@ -426,7 +430,6 @@ namespace Final_CSV
             int i = 0;
             foreach (KeyValuePair<String, Type> kvp in variables)
             {
-                //treeView1.Nodes.Add(kvp.Key + ";" + kvp.Value);
                 treeView1.Nodes.Add(kvp.Key);
                 treeView1.Nodes[i].Nodes.Add(kvp.Value.ToString());
                 i++;
@@ -514,12 +517,36 @@ namespace Final_CSV
 
         private void newFormButton_Click(object sender, EventArgs e)
         {
-            if (itemsList != null)
+            if (itemsList != null && variables.Keys.Count >= 2)
             {
                 Form newForm = new GraphVisualizer(itemsList, variables);
                 newForm.Show();
             }
         }
 
+        private void fieldSeparatorComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (fieldSeparatorComboBox.SelectedIndex)
+            {
+                case 0:
+                    selectedFieldSeparator = ",";
+                    break;
+                case 1:
+                    selectedFieldSeparator = ";";
+                    break;
+                case 2:
+                    selectedFieldSeparator = "-";
+                    break;
+                case 3:
+                    selectedFieldSeparator = " ";
+                    break;
+                case 4:
+                    selectedFieldSeparator = "/";
+                    break;
+                default:
+                    selectedFieldSeparator = ";";
+                    break;
+            }
+        }
     }
 }

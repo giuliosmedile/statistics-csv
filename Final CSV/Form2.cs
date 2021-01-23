@@ -39,11 +39,12 @@ namespace Final_CSV
         Rectangle histogramXViewport;
         Rectangle histogramYViewPort;
         Rectangle contingencyTableViewPort;
+        Rectangle dataViewport;
 
         Histogram histogramX;
         Histogram histogramY;
         ContingencyTable contingencyTable;
-        LinearRegression lr;
+        Regression regression;
 
 
         private Rectangle viewportAtMouseDown;
@@ -74,14 +75,6 @@ namespace Final_CSV
                     yComboBox.Items.Add(kvp.Key);
                 }
             }
-            //foreach (FieldInfo fi in itemsList[0].GetType().GetFields())
-            //{
-            //    if (fi.FieldType.Equals(typeof(Int32)) || fi.FieldType.Equals(typeof(Int64)) || fi.FieldType.Equals(typeof(Double)))
-            //    {
-            //        xComboBox.Items.Add(fi.Name);
-            //        yComboBox.Items.Add(fi.Name);
-            //    }
-            //}
 
             xComboBox.SelectedItem = xComboBox.Items[0];
             yComboBox.SelectedItem = yComboBox.Items[1];
@@ -98,6 +91,7 @@ namespace Final_CSV
             this.histogramXViewport = new Rectangle(scatterPlotViewport.X, scatterPlotViewport.Y + scatterPlotViewport.Height + 10, scatterPlotViewport.Width, scatterPlotViewport.Height / 4);
             this.histogramYViewPort = new Rectangle(scatterPlotViewport.X - scatterPlotViewport.Width / 4 - 10, scatterPlotViewport.Y, scatterPlotViewport.Width / 4, scatterPlotViewport.Height);
             this.contingencyTableViewPort = new Rectangle(10, pictureBox1.Height - 350, pictureBox1.Width - 75, 245);
+            this.dataViewport = new Rectangle(scatterPlotViewport.Right + 10, scatterPlotViewport.Top, scatterPlotViewport.Width + 50, scatterPlotViewport.Height + 10 + histogramXViewport.Height);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -137,8 +131,42 @@ namespace Final_CSV
                 histogramX = new Histogram(xValues, 15);
                 histogramY = new Histogram(yValues, 15);
                 contingencyTable = new ContingencyTable(xValues, yValues);
-                lr = new LinearRegression(xValues, yValues);
+                regression = new Regression(xValues, yValues);
+
+                histogramX.drawXHistogram(g, histogramXViewport);
+                histogramY.drawYHistogram(g, histogramYViewPort);
+                contingencyTable.drawTable(g, contingencyTableViewPort, this.radioAbsolute.Checked);
+
+                
+                g.DrawRectangle(Pens.Blue, histogramXViewport);
+                g.DrawRectangle(Pens.Blue, histogramYViewPort);
+                g.DrawRectangle(Pens.Green, contingencyTableViewPort);
+                g.DrawRectangle(Pens.Black, dataViewport);
+
                 this.drawScene();
+
+                //Draw data table
+                using (Font f = new Font("CourierNew", 10)) {
+                    string s = "--- Data ---\n";
+                    s += "- Datapoints data - \n";
+                    s += "\tMinimum X value: " + minXWindow + "\n";
+                    s += "\tMaximum X value: " + maxXWindow + "\n";
+                    s += "\tMinimum Y value: " + minYWindow + "\n";
+                    s += "\tMaximum Y value: " + maxYWindow + "\n";
+                    s += "\tAverage X value: " + xValues.Average() + "\n";
+                    s += "\tAverage Y value: " + yValues.Average() + "\n";
+
+                    s += "- Regression Data -\n";
+                    s += "-- Linear Regression --\n";
+                    s += "\ty = mx + q\n";
+                    s += "\tm = " + regression.m + "\n\tq = " + regression.q + "\n";
+                    s += "-- Quadratic Regression --\n";
+                    s += "\ty = ax² + bx + c\n";
+                    s += "\ta = " + regression.a + "\n\tb = " + regression.b + "\n\tc = " + regression.c + "\n";
+
+
+                    g.DrawString(s, f, Brushes.Black, new Point(dataViewport.X + 3, dataViewport.Y + 3));
+                }
             } catch (Exception ex)
             {
                 Debug.WriteLine("Couldn't locate one of the variable types. Whoops!");
@@ -149,14 +177,9 @@ namespace Final_CSV
 
         public void drawScene()
         {
-            g.Clear(Color.White);
-            histogramX.drawXHistogram(g, histogramXViewport);
-            histogramY.drawYHistogram(g, histogramYViewPort);
-            contingencyTable.drawTable(g, contingencyTableViewPort, this.radioAbsolute.Checked);
+            //g.Clear(Color.White);
+            g.FillRectangle(new SolidBrush(Color.FromArgb(240,240,240)), new Rectangle(scatterPlotViewport.X - 3, scatterPlotViewport.Y - 3, scatterPlotViewport.Width + 6, scatterPlotViewport.Height + 6));
             g.DrawRectangle(Pens.Red, scatterPlotViewport);
-            g.DrawRectangle(Pens.Blue, histogramXViewport);
-            g.DrawRectangle(Pens.Blue, histogramYViewPort);
-            g.DrawRectangle(Pens.Green, contingencyTableViewPort);
 
             //Scatterplot
             foreach (DataPoint d in dataset)
@@ -165,7 +188,7 @@ namespace Final_CSV
                 int yDevice = this.yViewport(d.y, scatterPlotViewport, minYWindow, rangeY);
 
                 //Scatterplot
-                if (this.scatterPlotViewport.Contains(xDevice, yDevice))
+                if (this.scatterPlotViewport.Contains(xDevice + 3, yDevice + 3) && this.scatterPlotViewport.Contains(xDevice - 3, yDevice - 3))
                 {
                     g.FillEllipse(Brushes.Black, new Rectangle(new Point(xDevice, yDevice), new Size(6, 6)));
                 }
@@ -180,13 +203,19 @@ namespace Final_CSV
             foreach (double q in xQuartiles)
             {
                 int v = this.xViewport(q, scatterPlotViewport, minXWindow, rangeX);
-                g.DrawLine(new Pen(Brushes.Red, 2), v, scatterPlotViewport.Y + scatterPlotViewport.Height, v, scatterPlotViewport.Y);
+                if (this.scatterPlotViewport.Contains(v, 100))
+                {
+                    g.DrawLine(Pens.Red, v, scatterPlotViewport.Y + scatterPlotViewport.Height, v, scatterPlotViewport.Y);
+                }
             }
 
             foreach (double q in yQuartiles)
             {
                 int v = this.yViewport(q, scatterPlotViewport, minYWindow, rangeY);
-                g.DrawLine(new Pen(Brushes.Red, 2), scatterPlotViewport.X + scatterPlotViewport.Width, v, scatterPlotViewport.X, v);
+                if (this.scatterPlotViewport.Contains(100, v))
+                {
+                    g.DrawLine(Pens.Red, scatterPlotViewport.X + scatterPlotViewport.Width, v, scatterPlotViewport.X, v);
+                }
             }
 
             if (this.scatterPlotViewport.Contains(xMean, yMean))
@@ -197,12 +226,18 @@ namespace Final_CSV
 
             //Linear Regression
             double minXRegression, maxXRegression = 0;
-            lr.findIntersectionPoints(minYWindow, maxYWindow, out minXRegression, out maxXRegression);
+            regression.findLinearRegressionIntersectionPoints(minYWindow, maxYWindow, out minXRegression, out maxXRegression);
             double minXRegressionViewport = this.xViewport(minXRegression, scatterPlotViewport, minXWindow, rangeX);
             double maxXRegressionViewport = this.xViewport(maxXRegression, scatterPlotViewport, minXWindow, rangeX);
             double minY = this.yViewport(minYWindow, scatterPlotViewport, minYWindow, rangeY);
             double maxY = this.yViewport(maxYWindow, scatterPlotViewport, minYWindow, rangeY);
-            g.DrawLine(Pens.Green, (float)minXRegressionViewport, (float)minY, (float)maxXRegressionViewport, (float)maxY);
+            //g.DrawLine(Pens.Green, (float)minXRegressionViewport, (float)minY, (float)maxXRegressionViewport, (float)maxY);
+
+            //Linear Regression
+            regression.drawLinearRegression(g, scatterPlotViewport, minXWindow, minYWindow, rangeX, rangeY);
+
+            //Quadratic Regression
+            regression.drawQuadraticRegression(g, scatterPlotViewport, minXWindow, minYWindow, rangeX, rangeY);
 
             this.pictureBox1.Image = b;
 

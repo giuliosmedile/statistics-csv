@@ -43,6 +43,8 @@ namespace Final_CSV
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.exportCSVButton = new System.Windows.Forms.Button();
             this.newFormButton = new System.Windows.Forms.Button();
+            this.fieldSeparatorComboBox = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -105,6 +107,7 @@ namespace Final_CSV
             // 
             // variableListBox
             // 
+            this.variableListBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.variableListBox.FormattingEnabled = true;
             this.variableListBox.Items.AddRange(new object[] {
             "Boolean",
@@ -117,7 +120,6 @@ namespace Final_CSV
             this.variableListBox.Name = "variableListBox";
             this.variableListBox.Size = new System.Drawing.Size(121, 28);
             this.variableListBox.TabIndex = 2;
-            this.variableListBox.DropDownStyle = ComboBoxStyle.DropDownList;
             // 
             // variableNameTextBox
             // 
@@ -142,7 +144,7 @@ namespace Final_CSV
             this.filePathTextBox.Enabled = false;
             this.filePathTextBox.Location = new System.Drawing.Point(484, 12);
             this.filePathTextBox.Name = "filePathTextBox";
-            this.filePathTextBox.Size = new System.Drawing.Size(849, 33);
+            this.filePathTextBox.Size = new System.Drawing.Size(541, 33);
             this.filePathTextBox.TabIndex = 4;
             this.filePathTextBox.Text = "";
             // 
@@ -168,6 +170,7 @@ namespace Final_CSV
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(355, 51);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = false;
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 28;
             this.dataGridView1.Size = new System.Drawing.Size(978, 585);
@@ -194,11 +197,43 @@ namespace Final_CSV
             this.newFormButton.UseVisualStyleBackColor = true;
             this.newFormButton.Click += new System.EventHandler(this.newFormButton_Click);
             // 
+            // fieldSeparatorComboBox
+            // 
+            this.fieldSeparatorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.fieldSeparatorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.fieldSeparatorComboBox.FormattingEnabled = true;
+            this.fieldSeparatorComboBox.Items.AddRange(new object[] {
+            "Comma [,]",
+            "Semicolon [;]",
+            "Dash [-]",
+            "Space [ ]",
+            "Slash [/]"});
+            this.fieldSeparatorComboBox.Location = new System.Drawing.Point(1196, 12);
+            this.fieldSeparatorComboBox.Name = "fieldSeparatorComboBox";
+            this.fieldSeparatorComboBox.Size = new System.Drawing.Size(137, 28);
+            this.fieldSeparatorComboBox.TabIndex = 12;
+            this.fieldSeparatorComboBox.SelectedIndexChanged += new System.EventHandler(this.fieldSeparatorComboBox_SelectedIndexChanged);
+            this.fieldSeparatorComboBox.SelectedIndex = 0;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(1031, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(159, 20);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Select field separator";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1345, 821);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.fieldSeparatorComboBox);
             this.Controls.Add(this.newFormButton);
             this.Controls.Add(this.exportCSVButton);
             this.Controls.Add(this.dataGridView1);
@@ -213,6 +248,7 @@ namespace Final_CSV
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -231,6 +267,8 @@ namespace Final_CSV
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button exportCSVButton;
         private System.Windows.Forms.Button newFormButton;
+        private ComboBox fieldSeparatorComboBox;
+        private Label label3;
     }
 }
 

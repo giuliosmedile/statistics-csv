@@ -62,7 +62,7 @@
     </Compile>
     <Compile Include="Histogram.cs" />
     <Compile Include="Interval.cs" />
-    <Compile Include="LinearRegression.cs" />
+    <Compile Include="Regression.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

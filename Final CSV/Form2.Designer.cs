@@ -72,12 +72,12 @@ namespace Final_CSV
             // xComboBox
             // 
             this.xComboBox.AllowDrop = true;
+            this.xComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.xComboBox.FormattingEnabled = true;
             this.xComboBox.Location = new System.Drawing.Point(185, 29);
             this.xComboBox.Name = "xComboBox";
             this.xComboBox.Size = new System.Drawing.Size(121, 28);
             this.xComboBox.TabIndex = 2;
-            this.xComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             // 
             // label1
             // 
@@ -100,12 +100,12 @@ namespace Final_CSV
             // yComboBox
             // 
             this.yComboBox.AllowDrop = true;
+            this.yComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.yComboBox.FormattingEnabled = true;
             this.yComboBox.Location = new System.Drawing.Point(488, 29);
             this.yComboBox.Name = "yComboBox";
             this.yComboBox.Size = new System.Drawing.Size(121, 28);
             this.yComboBox.TabIndex = 4;
-            this.yComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             // 
             // radioAbsolute
             // 
@@ -133,6 +133,7 @@ namespace Final_CSV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(2437, 1399);
             this.Controls.Add(this.radioRelative);
             this.Controls.Add(this.radioAbsolute);
