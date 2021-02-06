@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Final_CSV
+namespace GiulioSmedile_CSV
 {
     partial class Form1
     {

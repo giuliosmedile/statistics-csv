@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Final_CSV
+namespace GiulioSmedile_CSV
 {
     static class Program
     {

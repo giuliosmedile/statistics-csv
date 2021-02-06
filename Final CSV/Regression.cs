@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Final_CSV
+namespace GiulioSmedile_CSV
 {
     class Regression
     {

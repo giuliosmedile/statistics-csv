@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Final_CSV
+namespace GiulioSmedile_CSV
 {
     public partial class GraphVisualizer : Form
     {

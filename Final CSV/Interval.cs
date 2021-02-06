@@ -1,4 +1,4 @@
-﻿namespace Final_CSV
+﻿namespace GiulioSmedile_CSV
 {
     class Interval
     {

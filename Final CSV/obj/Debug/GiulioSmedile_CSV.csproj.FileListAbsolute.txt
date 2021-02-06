@@ -1,0 +1,11 @@
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\bin\Debug\GiulioSmedile_CSV.exe.config
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\bin\Debug\GiulioSmedile_CSV.exe
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\bin\Debug\GiulioSmedile_CSV.pdb
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\obj\Debug\GiulioSmedile_CSV.csprojAssemblyReference.cache
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\obj\Debug\GiulioSmedile_CSV.Form1.resources
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\obj\Debug\GiulioSmedile_CSV.GraphVisualizer.resources
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\obj\Debug\GiulioSmedile_CSV.Properties.Resources.resources
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\obj\Debug\GiulioSmedile_CSV.csproj.GenerateResource.cache
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\obj\Debug\GiulioSmedile_CSV.csproj.CoreCompileInputs.cache
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\obj\Debug\GiulioSmedile_CSV.exe
+C:\Users\giuli\source\repos\giuliosmedile\statistics-csv\Final CSV\obj\Debug\GiulioSmedile_CSV.pdb
