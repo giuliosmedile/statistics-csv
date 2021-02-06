@@ -70,15 +70,22 @@ namespace Final_CSV
         {
             foreach (KeyValuePair<String, Type> kvp in variables)
             {
+                //Only take numerical variables
                 if (kvp.Value.Equals(typeof(Int32)) || kvp.Value.Equals(typeof(Int64)) || kvp.Value.Equals(typeof(Double))) {
                     xComboBox.Items.Add(kvp.Key);
                     yComboBox.Items.Add(kvp.Key);
                 }
             }
 
-            xComboBox.SelectedItem = xComboBox.Items[0];
-            yComboBox.SelectedItem = yComboBox.Items[1];
-
+            //if there are not at least 2 variables, the window closes itself
+            try
+            {
+                xComboBox.SelectedItem = xComboBox.Items[0];
+                yComboBox.SelectedItem = yComboBox.Items[1];
+            } catch (Exception ex)
+            {
+                this.Close();
+            }
         }
 
         private void initGraphics()
@@ -223,15 +230,6 @@ namespace Final_CSV
                 g.DrawLine(Pens.Blue, xMean, scatterPlotViewport.Y + scatterPlotViewport.Height, xMean, scatterPlotViewport.Y);
                 g.DrawLine(Pens.Blue, scatterPlotViewport.X + scatterPlotViewport.Width, yMean, scatterPlotViewport.X, yMean);
             }
-
-            //Linear Regression
-            double minXRegression, maxXRegression = 0;
-            regression.findLinearRegressionIntersectionPoints(minYWindow, maxYWindow, out minXRegression, out maxXRegression);
-            double minXRegressionViewport = this.xViewport(minXRegression, scatterPlotViewport, minXWindow, rangeX);
-            double maxXRegressionViewport = this.xViewport(maxXRegression, scatterPlotViewport, minXWindow, rangeX);
-            double minY = this.yViewport(minYWindow, scatterPlotViewport, minYWindow, rangeY);
-            double maxY = this.yViewport(maxYWindow, scatterPlotViewport, minYWindow, rangeY);
-            //g.DrawLine(Pens.Green, (float)minXRegressionViewport, (float)minY, (float)maxXRegressionViewport, (float)maxY);
 
             //Linear Regression
             regression.drawLinearRegression(g, scatterPlotViewport, minXWindow, minYWindow, rangeX, rangeY);

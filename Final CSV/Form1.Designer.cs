@@ -66,7 +66,7 @@ namespace Final_CSV
             this.selectFileButton.Name = "selectFileButton";
             this.selectFileButton.Size = new System.Drawing.Size(123, 33);
             this.selectFileButton.TabIndex = 2;
-            this.selectFileButton.Text = "Select File";
+            this.selectFileButton.Text = "Load File";
             this.selectFileButton.UseVisualStyleBackColor = true;
             this.selectFileButton.Click += new System.EventHandler(this.button1_Click);
             // 

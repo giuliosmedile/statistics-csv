@@ -31,7 +31,7 @@ namespace Final_CSV
         string filePath;
         TextFieldParser tfp;
         Type dataPointType;
-        string className = "DataType";
+        string className = "MyDataType";
         Dictionary<String, Type> variables;
         string oldVariableName;
         string selectedFieldSeparator;
@@ -445,14 +445,14 @@ namespace Final_CSV
         {
             //className = classNameTextBox.Text;
 
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "C# files (*.cs)|*.cs";
-            saveFileDialog1.RestoreDirectory = true;
-            saveFileDialog1.FileName = t.Name;
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "C# files (*.cs)|*.cs";
+            sfd.RestoreDirectory = true;
+            sfd.FileName = t.Name;
 
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
-                var sw = new StreamWriter(saveFileDialog1.FileName);
+                var sw = new StreamWriter(sfd.FileName);
 
                 //Class name
                 sw.WriteLine("public class " + className + "\n{");
@@ -517,10 +517,16 @@ namespace Final_CSV
 
         private void newFormButton_Click(object sender, EventArgs e)
         {
-            if (itemsList != null && variables.Keys.Count >= 2)
+            try
             {
-                Form newForm = new GraphVisualizer(itemsList, variables);
-                newForm.Show();
+                if (itemsList != null && variables.Keys.Count >= 2)
+                {
+                    Form newForm = new GraphVisualizer(itemsList, variables);
+                    newForm.Show();
+                }
+            } catch (Exception ex)
+            {
+                Debug.WriteLine(ex.StackTrace);
             }
         }
 
